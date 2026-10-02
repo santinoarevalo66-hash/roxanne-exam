@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender & Society Examination Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-bg: #fff0f5;
+            --pink-primary: #ec4899;
+            --pink-hover: #db2777;
+            --pink-light: #fce7f3;
+            --pink-dark: #831843;
+            --pink-border: #fbcfe8;
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --text-dark: #371b28;
+            --text-muted: #9d5c78;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --shadow: 0 20px 30px -10px rgba(236, 72, 153, 0.2), 0 8px 15px -6px rgba(219, 39, 119, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fdf2f8 0%, #fbcfe8 50%, #f472b6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            position: relative;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 2px solid #fbcfe8;
+            display: none;
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .welcome-hero {
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 18px;
+            background: var(--pink-light);
+            color: var(--pink-hover);
+            font-weight: 700;
+            font-size: 0.85rem;
+            border-radius: 50px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid var(--pink-border);
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: var(--pink-dark);
+            margin-bottom: 12px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--pink-dark);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--pink-border);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+            outline: none;
+            background: #fff5f8;
+            color: var(--text-dark);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--pink-primary);
+            background: #ffffff;
+        }
+
+        .btn {
+            background: var(--pink-primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+        }
+
+        .btn:hover {
+            background: var(--pink-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(219, 39, 119, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--pink-light);
+            color: var(--pink-hover);
+            box-shadow: none;
+            width: auto;
+        }
+
+        .btn-secondary:hover {
+            background: #f472b6;
+            color: white;
+            box-shadow: none;
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--pink-border);
+        }
+
+        .user-info-tag {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--pink-dark);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background: var(--pink-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--pink-primary), var(--pink-hover));
+            width: 2%;
+            transition: width 0.3s ease;
+        }
+
+        /* QUESTION SELECTOR PALETTE */
+        .question-navigator {
+            margin-bottom: 25px;
+            background: var(--pink-bg);
+            padding: 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--pink-border);
+        }
+
+        .nav-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--pink-dark);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grid-numbers {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .num-btn {
+            background: white;
+            border: 1.5px solid var(--pink-border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            padding: 6px 0;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .num-btn:hover {
+            border-color: var(--pink-primary);
+            color: var(--pink-hover);
+            background: var(--pink-light);
+        }
+
+        .num-btn.answered {
+            background: var(--pink-light);
+            color: var(--pink-hover);
+            border-color: var(--pink-primary);
+        }
+
+        .num-btn.active-q {
+            background: var(--pink-primary);
+            color: white;
+            border-color: var(--pink-hover);
+            box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--pink-dark);
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            border: 2px solid var(--pink-border);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            background: white;
+            color: var(--text-dark);
+        }
+
+        .option-card:hover {
+            border-color: var(--pink-primary);
+            background: var(--pink-bg);
+        }
+
+        .option-card.selected {
+            border-color: var(--pink-primary);
+            background: var(--pink-light);
+            color: var(--pink-dark);
+            font-weight: 700;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .score-box {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            color: white;
+            border-radius: var(--radius-md);
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .score-num {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            margin: 10px 0;
+        }
+
+        .review-section {
+            margin-top: 30px;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .review-item {
+            border: 1px solid var(--pink-border);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        .review-item.correct {
+            border-left: 5px solid var(--success);
+        }
+
+        .review-item.incorrect {
+            border-left: 5px solid var(--danger);
+        }
+
+        .review-q {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--pink-dark);
+        }
+
+        .ans-badge {
+            display: block;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+
+        .ans-badge.user-ans {
+            background: var(--danger-light);
+            color: #b91c1c;
+        }
+
+        .ans-badge.correct-ans {
+            background: var(--success-light);
+            color: #047857;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- STEP 1: ENTRY FORM -->
+    <div id="view-entry" class="card active">
+        <div class="welcome-hero">
+            <span class="badge">🌸 Academic Portal</span>
+            <h1>Gender & Society Examination</h1>
+            <p class="subtitle">Select any question number to answer in your preferred order! Evaluates Topics 1–5.</p>
+
+            <form id="entry-form" onsubmit="startExam(event)">
+                <div class="form-group">
+                    <label for="username">Full Name / Student ID</label>
+                    <input type="text" id="username" placeholder="e.g., Jane Doe (2026-1004)" required>
+                </div>
+                <button type="submit" class="btn">
+                    Begin 50-Question Exam &rarr;
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- STEP 2: EXAM INTERFACE -->
+    <div id="view-exam" class="card">
+        <div class="exam-header">
+            <div>
+                <span class="user-info-tag" id="display-user-name">Student</span>
+            </div>
+            <div id="q-counter" style="font-weight:700; color:var(--pink-hover);">Question 1 of 50</div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <!-- Direct Jump Question Grid -->
+        <div class="question-navigator">
+            <div class="nav-title">Jump to Question Number:</div>
+            <div class="grid-numbers" id="grid-numbers"></div>
+        </div>
+
+        <div class="question-title" id="q-text">Loading question...</div>
+
+        <div class="options-grid" id="options-container">
+            <!-- Dynamic options -->
+        </div>
+
+        <div class="nav-buttons">
+            <button type="button" class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" disabled>&larr; Previous</button>
+            <button type="button" class="btn" id="btn-next" onclick="nextQuestion()">Next &rarr;</button>
+        </div>
+    </div>
+
+    <!-- STEP 3: RESULT VIEW -->
+    <div id="view-result" class="card">
+        <div class="welcome-hero">
+            <span class="badge" style="background:#d1fae5; color:#059669;">✨ Exam Completed</span>
+            <h1 id="result-user-name">Assessment Results</h1>
+            
+            <div class="score-box">
+                <div>Your Final Score</div>
+                <div class="score-num" id="final-score">0 / 50</div>
+                <div id="score-percentage" style="font-size: 1.1rem; opacity: 0.95;">0%</div>
+            </div>
+
+            <h3 style="text-align:left; margin-bottom:15px; font-weight:700; color:var(--pink-dark);">Comprehensive Question Review</h3>
+            <div class="review-section" id="review-container">
+                <!-- Dynamic Review Items -->
+            </div>
+
+            <button class="btn" onclick="location.reload()" style="margin-top:25px;">Retake Examination</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+  {
+    "q": "What term refers to societal expectations about how people should behave based on their gender?",
+    "options": [
+      "Status",
+      "Role",
+      "Gender Roles",
+      "Heteronormativity"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Which social level focuses on large institutions and society as a whole?",
+    "options": [
+      "Micro",
+      "Mezzo",
+      "Macro",
+      "Global"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Which sociological theory focuses on social order and how different parts of society work together?",
+    "options": [
+      "Conflict Theory",
+      "Functionalism",
+      "Symbolic Interactionism",
+      "Social Constructionism"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which theory emphasizes inequality, power dynamics, and competition for resources?",
+    "options": [
+      "Functionalism",
+      "Social Constructionism",
+      "Conflict Theory",
+      "Feminist Perspective"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "What concept describes the everyday performance that produces and reinforces gender?",
+    "options": [
+      "Heteronormativity",
+      "Doing Gender",
+      "Intersectionality",
+      "Gender Schema"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What term describes a cultural assumption that heterosexuality is the default or normal orientation?",
+    "options": [
+      "Sexual Scripts",
+      "Heteronormativity",
+      "Gender Typing",
+      "Essentialism"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which concept explains how gender interacts with other factors like race, class, and religion?",
+    "options": [
+      "Intersectionality",
+      "Androgyny",
+      "Dual-Culture Model",
+      "Essentialism"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Which feminist perspective focuses primarily on equal rights and legal opportunities?",
+    "options": [
+      "Radical Feminism",
+      "Socialist Feminism",
+      "Liberal Feminism",
+      "Cultural Feminism"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Which feminist perspective targets patriarchy and male dominance as the root of inequality?",
+    "options": [
+      "Radical Feminism",
+      "Liberal Feminism",
+      "Cyberfeminism",
+      "Ecofeminism"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Which feminist approach links gender inequality with environmental issues?",
+    "options": [
+      "Global Feminism",
+      "Ecofeminism",
+      "Cultural Feminism",
+      "Socialist Feminism"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What is an individual's internal, deeply held sense of their own gender called?",
+    "options": [
+      "Gender Expression",
+      "Sexual Orientation",
+      "Gender Identity",
+      "Assigned Sex"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "How a person presents gender outwardly through behavior and appearance is known as:",
+    "options": [
+      "Gender Expression",
+      "Gender Identity",
+      "Sexual Script",
+      "Gender Role"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "What is the belief that biology alone strictly determines human behavior?",
+    "options": [
+      "Biological Determinism",
+      "Social Constructionism",
+      "Neurosexism",
+      "Essentialism"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The practice of using claims about brain differences to reinforce gender stereotypes is termed:",
+    "options": [
+      "Essentialism",
+      "Neurosexism",
+      "Gender Schema",
+      "Biological Determinism"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What term refers to socially learned expectations and rules regarding sexual behavior?",
+    "options": [
+      "Sexual Scripts",
+      "Sexual Double Standard",
+      "Gender Schema",
+      "Proxemic Boundary"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Applying different social rules or expectations for sexual behavior based on gender is called:",
+    "options": [
+      "Gender Policing",
+      "Sexual Double Standard",
+      "Generic Masculine",
+      "Linguistic Derogation"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "In health studies, what does 'Morbidity' refer to?",
+    "options": [
+      "Death rates",
+      "Illness or disease rate",
+      "Healthcare access",
+      "Life expectancy"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What term describes death or death rates in health research?",
+    "options": [
+      "Morbidity",
+      "Mortality",
+      "Socialization",
+      "Gender Bias"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "How can gender expectations affect personal health according to Topic 2?",
+    "options": [
+      "By altering genetic code",
+      "By influencing health behavior and help-seeking",
+      "By preventing illness",
+      "By eliminating double standards"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What caution is given regarding essentialism in gender studies?",
+    "options": [
+      "Always assume biology is irrelevant",
+      "Avoid assuming all members of a gender are naturally the same",
+      "Ignore cultural influences",
+      "Rely entirely on brain scans"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which agent of socialization is typically considered the primary source of initial gender learning?",
+    "options": [
+      "Peers",
+      "Media",
+      "Family",
+      "Workplace"
+    ],
+    "answer": 2
+  },
+  {
+    "q": "Which theory proposes that gender roles are learned through observation, imitation, and reinforcement?",
+    "options": [
+      "Cognitive Development Theory",
+      "Social Learning Theory",
+      "Gender Schema Theory",
+      "Social Cognitive Theory"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What is a mental framework or organizational system that individuals use to categorize gender information?",
+    "options": [
+      "Gender Schema",
+      "Register",
+      "Genderlect",
+      "Proxemic Boundary"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Associating specific activities, roles, or behaviors with a particular gender is called:",
+    "options": [
+      "Gender Policing",
+      "Gender Typing",
+      "Ostracism",
+      "Androgyny"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "The active enforcement or pressure on others to conform to traditional gender expectations is known as:",
+    "options": [
+      "Gender Policing",
+      "Cultural Lag",
+      "Doing Gender",
+      "Gender Script"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Excluding an individual from a social group or online community is termed:",
+    "options": [
+      "Cultural Lag",
+      "Ostracism",
+      "Gender Typing",
+      "Neurosexism"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "A combination of traditionally masculine and feminine traits in an individual is referred to as:",
+    "options": [
+      "Androgyny",
+      "Essentialism",
+      "Heteronormativity",
+      "Gender lect"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "When social practices and norms change more slowly than technology, it is called:",
+    "options": [
+      "Cultural Lag",
+      "Social Construction",
+      "Historical Analysis",
+      "Gender Typing"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Which socialization agent exerts strong pressure regarding peer acceptance and rejection?",
+    "options": [
+      "Family",
+      "Peers",
+      "Workplace",
+      "Legal System"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Cognitive Development Theory emphasizes that children are:",
+    "options": [
+      "Passive recipients of rewards",
+      "Active participants in understanding gender",
+      "Purely biologically determined",
+      "Unaware of gender categories"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Using masculine terms (like 'mankind' or 'he') as if they represent all human beings is called:",
+    "options": [
+      "Generic Masculine",
+      "Linguistic Derogation",
+      "Behavior-Based Language",
+      "Genderlect"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Judging the exact same behavior differently depending on whether a man or woman performs it is:",
+    "options": [
+      "Gendered Title",
+      "Gendered Evaluation",
+      "Generic Masculine",
+      "Register"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Language that devalues, belittles, or degrades a specific gender is known as:",
+    "options": [
+      "Behavior-Based Language",
+      "Linguistic Derogation",
+      "Genderlect",
+      "Generic Masculine"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which communication model focuses on power dynamics and unequal authority?",
+    "options": [
+      "Dual-Culture Model",
+      "Dominance Model",
+      "Social Constructionist Model",
+      "Social Learning Model"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Communication patterns associated with gendered socialization are termed:",
+    "options": [
+      "Genderlect",
+      "Register",
+      "Proxemics",
+      "Derogation"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "The study of physical space and distance in human interactions is called:",
+    "options": [
+      "Proxemics",
+      "Register",
+      "Genderlect",
+      "Socialization"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Adjusting speech style or language based on the specific situation or audience involves changing one's:",
+    "options": [
+      "Register",
+      "Proxemic Boundary",
+      "Biological Determinism",
+      "Gender Schema"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Before offering help to a distressed friend, what helpful question should you ask?",
+    "options": [
+      "'Why are you upset?'",
+      "'Advice or listening?'",
+      "'Is it legal?'",
+      "'Who is at fault?'"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Republic Act 11313 is officially known as the:",
+    "options": [
+      "Anti-Bawal Bastos Law (Safe Spaces Act)",
+      "Gender Equality Act",
+      "Anti-Harassment Code",
+      "Women Protection Act"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Under safe space principles, does saying 'Joke lang' excuse unwanted sexual remarks?",
+    "options": [
+      "Yes, if intended as humor",
+      "No, it does not automatically make it acceptable",
+      "Yes, if in private",
+      "Only in online chats"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Repeated sexual comments after someone explicitly says STOP violate:",
+    "options": [
+      "Safe communication boundaries",
+      "Cultural lag",
+      "Generic masculine rules",
+      "Dual-culture model"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Sharing private screenshots in a group chat without consent violates:",
+    "options": [
+      "Privacy boundaries",
+      "Biological norms",
+      "Genderlect",
+      "Register"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "When history is centered heavily or almost exclusively on men's experiences, it is described as:",
+    "options": [
+      "Androcentric",
+      "Androgynous",
+      "Intersectional",
+      "Social Constructionist"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Which historical approach simply adds women to existing narratives without analyzing underlying power structures?",
+    "options": [
+      "Compensatory History",
+      "Add-and-Stir Approach",
+      "Contribution History",
+      "Intersectional History"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which approach focuses on recovering missing histories of women?",
+    "options": [
+      "Compensatory History",
+      "Add-and-Stir Approach",
+      "Social History",
+      "Macro Analysis"
+    ],
+    "answer": 0
+  },
+  {
+    "q": "Which historical shift increased the physical and social separation between HOME and WORKPLACE?",
+    "options": [
+      "Colonization",
+      "Industrialization",
+      "World War II",
+      "Renaissance"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "What main demand defines the First Wave of Feminism?",
+    "options": [
+      "Workplace equality",
+      "Women's voting rights / Suffrage",
+      "Diversity & Identity",
+      "Digital activism"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which wave of feminism focused heavily on workplace equality, reproductive rights, and family dynamics?",
+    "options": [
+      "1st Wave",
+      "2nd Wave",
+      "3rd Wave",
+      "4th Wave"
+    ],
+    "answer": 1
+  },
+  {
+    "q": "Which wave of feminism is characterized by digital activism and online movements like #MeToo?",
+    "options": [
+      "1st Wave",
+      "2nd Wave",
+      "3rd Wave",
+      "4th Wave"
+    ],
+    "answer": 3
+  },
+  {
+    "q": "What is the central meaning of the famous slogan 'The personal is political'?",
+    "options": [
+      "Personal decisions have no social impact",
+      "Personal experiences reflect larger societal power structures and inequality",
+      "Only politicians can address gender issues",
+      "Private life must be shared publicly"
+    ],
+    "answer": 1
+  }
+];
+
+    let currentUser = "";
+    let currentQ = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    function startExam(e) {
+        e.preventDefault();
+        const inputName = document.getElementById('username').value.trim();
+        if (!inputName) return;
+
+        currentUser = inputName;
+        document.getElementById('display-user-name').innerText = currentUser;
+
+        renderNavigatorGrid();
+        switchView('view-entry', 'view-exam');
+        loadQuestion(0);
+    }
+
+    function switchView(fromId, toId) {
+        const fromView = document.getElementById(fromId);
+        const toView = document.getElementById(toId);
+
+        fromView.classList.remove('active');
+        setTimeout(() => {
+            fromView.style.display = 'none';
+            toView.style.display = 'block';
+            setTimeout(() => toView.classList.add('active'), 50);
+        }, 300);
+    }
+
+    function renderNavigatorGrid() {
+        const navGrid = document.getElementById('grid-numbers');
+        navGrid.innerHTML = '';
+
+        for (let i = 0; i < questions.length; i++) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `num-btn ${userAnswers[i] !== null ? 'answered' : ''} ${i === currentQ ? 'active-q' : ''}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            navGrid.appendChild(btn);
+        }
+    }
+
+    function loadQuestion(index) {
+        currentQ = index;
+        const q = questions[index];
+
+        // Update Counter & Progress
+        document.getElementById('q-counter').innerText = `Question ${index + 1} of ${questions.length}`;
+        document.getElementById('q-text').innerText = `${index + 1}. ${q.q}`;
+        
+        const answeredCount = userAnswers.filter(a => a !== null).length;
+        document.getElementById('progress-bar').style.width = `${(answeredCount / questions.length) * 100}%`;
+
+        // Update Nav Grid
+        renderNavigatorGrid();
+
+        // Render Options
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        q.options.forEach((opt, idx) => {
+            const card = document.createElement('div');
+            card.className = `option-card ${userAnswers[index] === idx ? 'selected' : ''}`;
+            card.innerHTML = `<span style="margin-right:12px; font-weight:700; color:var(--pink-primary);">${String.fromCharCode(65 + idx)}.</span> ${opt}`;
+            card.onclick = () => selectOption(idx);
+            container.appendChild(card);
+        });
+
+        // Button States
+        document.getElementById('btn-prev').disabled = index === 0;
+        if (index === questions.length - 1) {
+            document.getElementById('btn-next').innerText = "Submit Exam";
+        } else {
+            document.getElementById('btn-next').innerText = "Next →";
+        }
+    }
+
+    function selectOption(optionIndex) {
+        userAnswers[currentQ] = optionIndex;
+        loadQuestion(currentQ);
+    }
+
+    function nextQuestion() {
+        if (currentQ < questions.length - 1) {
+            loadQuestion(currentQ + 1);
+        } else {
+            submitExam();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQ > 0) {
+            loadQuestion(currentQ - 1);
+        }
+    }
+
+    function submitExam() {
+        let score = 0;
+        questions.forEach((q, idx) => {
+            if (userAnswers[idx] === q.answer) {
+                score++;
+            }
+        });
+
+        // Render Results
+        document.getElementById('result-user-name').innerText = `Results for ${currentUser}`;
+        document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+        const pct = Math.round((score / questions.length) * 100);
+        document.getElementById('score-percentage').innerText = `Overall Score: ${pct}%`;
+
+        // Render Review
+        const reviewContainer = document.getElementById('review-container');
+        reviewContainer.innerHTML = '';
+
+        questions.forEach((q, idx) => {
+            const isCorrect = userAnswers[idx] === q.answer;
+            const item = document.createElement('div');
+            item.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+
+            const userText = userAnswers[idx] !== null ? q.options[userAnswers[idx]] : "Not Answered";
+            const correctText = q.options[q.answer];
+
+            item.innerHTML = `
+                <div class="review-q">${idx + 1}. ${q.q}</div>
+                ${!isCorrect ? `<div class="ans-badge user-ans">Your Answer: ${userText}</div>` : ''}
+                <div class="ans-badge correct-ans">Correct Answer: ${correctText}</div>
+            `;
+            reviewContainer.appendChild(item);
+        });
+
+        switchView('view-exam', 'view-result');
+    }
+</script>
+</body>
+</html>
